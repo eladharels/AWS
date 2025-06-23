@@ -1,0 +1,17 @@
+{
+  "smtp": {
+    "host": "",
+    "port": "",
+    "from": "",
+    "to": ""
+  },
+  "ntfy": {},
+  "ldap": {
+    "url": "",
+    "base": "",
+    "userDn": "",
+    "bindDn": "",
+    "bindPass": "",
+    "requiredGroup": ""
+  }
+}
