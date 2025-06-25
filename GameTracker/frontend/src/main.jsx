@@ -9,7 +9,11 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <ToastProvider>
+<<<<<<< HEAD
         <App />
+=======
+      <App />
+>>>>>>> master
       </ToastProvider>
     </BrowserRouter>
   </StrictMode>,

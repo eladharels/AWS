@@ -2,12 +2,27 @@ import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, Link, useLocation, Navigate, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
+<<<<<<< HEAD
 import { FaSearch, FaBook, FaUsers, FaSignOutAlt, FaLock, FaSortAlphaDown, FaSortNumericDown, FaSortAmountDown, FaCog, FaEnvelope, FaBell, FaCheckCircle, FaRegCalendarAlt, FaArrowLeft, FaPlay, FaHeart, FaEye, FaCheck, FaTh, FaList, FaTrash, FaExclamationCircle } from 'react-icons/fa'
 import { useToast } from './contexts/ToastContext'
 
 // Dynamic API base URL that works from any device
 //const API_BASE = "http://10.0.0.30:3000/api"
 const API_BASE = "/api"
+=======
+import { FaSearch, FaBook, FaUsers, FaSignOutAlt, FaLock, FaSortAlphaDown, FaSortNumericDown, FaSortAmountDown, FaCog, FaEnvelope, FaBell, FaCheckCircle, FaRegCalendarAlt, FaArrowLeft, FaPlay, FaHeart, FaEye, FaCheck, FaTh, FaList, FaTrash, FaExclamationCircle, FaShareAlt } from 'react-icons/fa'
+import { useToast } from './contexts/ToastContext'
+import SharedLibrary from '../SharedLibrary'
+
+// Dynamic API base URL that works from any device
+const API_BASE =
+window.location.hostname === "gametracker.etech.ink"
+  ? "https://gametracker.etech.ink/api"
+  : "http://10.0.0.30:3000/api";
+//const API_BASE = "http://10.0.0.30:3000/api"
+//const API_BASE = "/api"
+
+>>>>>>> master
 const STATUSES = ['wishlist', 'playing', 'done']
 // ${window.location.protocol} ${window.location.hostname}
 function useAuth() {
@@ -72,6 +87,13 @@ function App() {
             <FaBook className="nav-icon" />
             <span className="nav-label">My Library</span>
           </Link>
+<<<<<<< HEAD
+=======
+          <Link to="/shared-library" className={location.pathname === '/shared-library' ? 'active' : ''}>
+            <FaShareAlt className="nav-icon" />
+            <span className="nav-label">Shared Library</span>
+          </Link>
+>>>>>>> master
           <Link to="/calendar" className={location.pathname === '/calendar' ? 'active' : ''}>
             <FaRegCalendarAlt className="nav-icon" />
             <span className="nav-label">Calendar</span>
@@ -99,6 +121,10 @@ function App() {
         <Routes>
           <Route path="/search" element={<SearchPage user={user} />} />
           <Route path="/library" element={<LibraryPage user={user} />} />
+<<<<<<< HEAD
+=======
+          <Route path="/shared-library" element={<SharedLibrary />} />
+>>>>>>> master
           <Route path="/calendar" element={<CalendarPage user={user} />} />
           <Route path="/users" element={<UserManagementPage user={user} />} />
           <Route path="/settings" element={<SettingsPage />} />
@@ -288,6 +314,10 @@ function UserManagementPage({ user }) {
               <th>Avatar</th>
               <th>Name</th>
               <th>Full name</th>
+<<<<<<< HEAD
+=======
+              <th>Email</th>
+>>>>>>> master
               <th>Role</th>
               <th>Date Joined</th>
               <th>Permissions</th>
@@ -314,6 +344,10 @@ function UserManagementPage({ user }) {
                   <td><div className="user-table-avatar" style={{ background: avatarBg }} aria-label={`Avatar for ${u.username}` }>{avatarLetter}</div></td>
                   <td><span className="user-table-name">{u.username}</span></td>
                   <td><span className="user-table-fullname">{u.display_name || ''}</span></td>
+<<<<<<< HEAD
+=======
+                  <td><span className="user-table-email" title={u.email || 'No email set'}>{u.email || '—'}</span></td>
+>>>>>>> master
                   <td><span className="user-table-role">{role}</span></td>
                   <td><span className="user-table-date">{joined}</span></td>
                   <td>
@@ -352,9 +386,27 @@ function SearchPage({ user }) {
   const [loading, setLoading] = useState(false)
   const [searchError, setSearchError] = useState('')
   const [viewMode, setViewMode] = useState('grid')
+<<<<<<< HEAD
   const navigate = useNavigate()
   const { showToast } = useToast();
 
+=======
+  const [gamePrices, setGamePrices] = useState({}) // { [gameId]: { price, loading, error } }
+  const navigate = useNavigate()
+  const { showToast } = useToast();
+
+  // Fetch price for a game by Steam App ID
+  const fetchGamePrice = async (gameId, steamAppId) => {
+    setGamePrices(prev => ({ ...prev, [gameId]: { loading: true } }))
+    try {
+      const res = await axios.get(`${API_BASE}/game-price/${steamAppId}`)
+      setGamePrices(prev => ({ ...prev, [gameId]: { price: res.data.price, loading: false } }))
+    } catch (err) {
+      setGamePrices(prev => ({ ...prev, [gameId]: { price: null, loading: false, error: true } }))
+    }
+  }
+
+>>>>>>> master
   // Search games
   const handleSearch = async (e) => {
     e.preventDefault()
@@ -363,7 +415,19 @@ function SearchPage({ user }) {
     setSearchError('')
     try {
       const res = await axios.get(`${API_BASE}/games/search?q=${encodeURIComponent(search)}`)
+<<<<<<< HEAD
       setSearchResults(res.data)
+=======
+      // For demo: mock a Steam App ID for the first result (e.g., Cyberpunk 2077 = 1091500)
+      const resultsWithSteam = res.data.map((g, i) => i === 0 ? { ...g, steamAppId: '1091500' } : g)
+      setSearchResults(resultsWithSteam)
+      // Fetch price for games with a Steam App ID
+      resultsWithSteam.forEach(game => {
+        if (game.steamAppId) {
+          fetchGamePrice(game.id, game.steamAppId)
+        }
+      })
+>>>>>>> master
     } catch (err) {
       setSearchResults([])
       setSearchError('Failed to search games. Please try again.')
@@ -397,6 +461,10 @@ function SearchPage({ user }) {
         coverUrl: game.coverUrl,
         releaseDate: game.releaseDate,
         status: (!game.releaseDate || unreleased) ? 'unreleased' : 'wishlist',
+<<<<<<< HEAD
+=======
+        steamAppId: game.steamAppId || null,
+>>>>>>> master
       })
       showToast('success', `Added ${game.name} to your library!`);
     } catch (err) {
@@ -444,6 +512,17 @@ function SearchPage({ user }) {
                 const release = new Date(game.releaseDate);
                 unreleased = release > today;
               }
+<<<<<<< HEAD
+=======
+              // Price display logic
+              let priceDisplay = 'Price: N/A';
+              if (game.steamAppId) {
+                const priceInfo = gamePrices[game.id];
+                if (priceInfo?.loading) priceDisplay = 'Price: ...';
+                else if (priceInfo?.price) priceDisplay = `Price: ${priceInfo.price}`;
+                else if (priceInfo && priceInfo.price === null) priceDisplay = 'Price: Not found';
+              }
+>>>>>>> master
               return (
                 <div key={game.id} className={`game-card ${viewMode === 'list' ? 'list-item' : ''}`} >
                   {game.coverUrl && (
@@ -457,6 +536,10 @@ function SearchPage({ user }) {
                       Release: {game.releaseDate ? game.releaseDate : 'Unreleased'}
                       {unreleased && <span className="unreleased-pill">Unreleased</span>}
                     </div>
+<<<<<<< HEAD
+=======
+                    <div className="game-price" style={{ margin: '0.5em 0', color: '#0ea5e9', fontWeight: 600 }}>{priceDisplay}</div>
+>>>>>>> master
                     <button
                       className="add-btn"
                       onClick={e => { e.stopPropagation(); addToLibrary(game, unreleased); }}
@@ -485,6 +568,11 @@ function LibraryPage({ user }) {
   const [sortDir, setSortDir] = useState('asc')
   const [viewMode, setViewMode] = useState('grid')
   const [currentPage, setCurrentPage] = useState(1)
+<<<<<<< HEAD
+=======
+  const [showPrices, setShowPrices] = useState(false)
+  const [gamePrices, setGamePrices] = useState({}) // { [game_id]: { price, loading, error } }
+>>>>>>> master
   const gamesPerPage = 15
 
   useEffect(() => {
@@ -540,6 +628,32 @@ function LibraryPage({ user }) {
   const indexOfFirstGame = indexOfLastGame - gamesPerPage
   const currentGames = filteredUserGames.slice(indexOfFirstGame, indexOfLastGame)
 
+<<<<<<< HEAD
+=======
+  // Fetch price for a game by Steam App ID
+  const fetchGamePrice = async (gameId, steamAppId) => {
+    setGamePrices(prev => ({ ...prev, [gameId]: { loading: true } }))
+    try {
+      const res = await axios.get(`${API_BASE}/game-price/${steamAppId}`)
+      setGamePrices(prev => ({ ...prev, [gameId]: { price: res.data.price, loading: false } }))
+    } catch (err) {
+      setGamePrices(prev => ({ ...prev, [gameId]: { price: null, loading: false, error: true } }))
+    }
+  }
+
+  // When showPrices is toggled on, fetch prices for visible games with steamAppId
+  useEffect(() => {
+    if (showPrices) {
+      currentGames.forEach(game => {
+        if (game.steamAppId && !gamePrices[game.game_id]) {
+          fetchGamePrice(game.game_id, game.steamAppId)
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showPrices, currentGames])
+
+>>>>>>> master
   // Change status
   const setGameStatus = async (game, status) => {
     if (!user) return alert('Enter a username first!')
@@ -591,7 +705,30 @@ function LibraryPage({ user }) {
     <div className="user-games-section">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h2 style={{margin: 0}}>My Library ({userGames.length})</h2>
+<<<<<<< HEAD
         <div className="view-controls">
+=======
+        <div className="view-controls" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            className="toggle-price-btn"
+            style={{
+              background: showPrices ? 'var(--color-accent)' : 'var(--color-card)',
+              color: showPrices ? 'var(--color-accent-contrast)' : 'var(--color-fg-muted)',
+              border: '1.5px solid var(--color-border)',
+              borderRadius: 12,
+              padding: '0.5em 1.2em',
+              fontWeight: 600,
+              fontSize: '1em',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: showPrices ? '0 4px 15px #0ea5e933' : 'none',
+            }}
+            onClick={() => setShowPrices(v => !v)}
+            aria-pressed={showPrices}
+          >
+            {showPrices ? 'Hide Prices' : 'Show Prices'}
+          </button>
+>>>>>>> master
           <div className="view-toggle">
             <button onClick={() => setViewMode('grid')} className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}><FaTh /></button>
             <button onClick={() => setViewMode('list')} className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}><FaList /></button>
@@ -653,6 +790,28 @@ function LibraryPage({ user }) {
                     <div>
                       <div className="game-title">{game.game_name}</div>
                       <div className="game-release-date">Release: {game.release_date ? game.release_date : 'Unreleased'}</div>
+<<<<<<< HEAD
+=======
+                      {showPrices && (
+                        <div className="game-price" style={{ margin: '0.5em 0', color: 'var(--color-fg-muted)', fontWeight: 400, fontSize: '0.98em', letterSpacing: 0.1, lineHeight: 1.2 }}>
+                          {/* Prefer cached price, fallback to live fetch */}
+                          {game.last_price ? (
+                            <>
+                              Price: {game.last_price}
+                              {game.last_price_updated && (
+                                <span style={{ fontSize: '0.85em', color: 'var(--color-fg-subtle)', marginLeft: 8 }}>
+                                  (updated {new Date(game.last_price_updated).toLocaleDateString()})
+                                </span>
+                              )}
+                            </>
+                          ) : game.steamAppId ? (
+                            gamePrices[game.game_id]?.loading ? 'Price: ...'
+                            : gamePrices[game.game_id]?.price ? `Price: ${gamePrices[game.game_id].price}`
+                            : 'Price: Not found'
+                          ) : 'Price: N/A'}
+                        </div>
+                      )}
+>>>>>>> master
                     </div>
                     <div className="game-card-actions">
                       {isUnreleased ? (

@@ -3355,4 +3355,17 @@ body, html {
   .pagination-info {
     font-size: 0.85rem;
   }
+<<<<<<< HEAD
+=======
+}
+
+.user-table-email {
+  color: #666;
+  font-size: 0.9em;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+>>>>>>> master
 }
